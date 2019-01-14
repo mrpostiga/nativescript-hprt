@@ -1,10 +1,10 @@
-import * as utils from "utils/utils";
-import * as application from "tns-core-modules/application";
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/distinctUntilChanged';
-import {
-    HPRTPrinter
-} from "./hprt.common";
+import * as utils from "tns-core-modules/utils/utils";
+import * as applicationModule from "tns-core-modules/application";
+import { Observable, of as observableOf } from 'rxjs';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { HPRTPrinter} from "./hprt.common";
+import {ImageSource, fromFile, fromResource, fromBase64} from "tns-core-modules/image-source";
+import {Folder, path, knownFolders} from "tns-core-modules/file-system";
 
 
 const BToperator: any = HPRTAndroidSDK.BTOperator;
@@ -35,41 +35,30 @@ export class Hprt {
     enableBluetooth(timeout?: number): Promise<any> {
         return new Promise((resolve, reject) => {
 
-            let wait = timeout ? timeout : 6000;
+            let wait = timeout || 6000;
 
-            let enableBluetoothWorker = new Worker('./workers/enable-bluetooth');
-            
-            enableBluetoothWorker.postMessage({});
-
-            enableBluetoothWorker.onmessage = function (msg: any) {
-                enableBluetoothWorker.terminate();
-                if(msg.data.success){
-                    if(msg.data.enabled){
-                        resolve();
+            if (this.mBluetoothAdapter == null) {
+                reject("Bluetooth NOT support");
+            } else {
+                if (this.mBluetoothAdapter.isEnabled()) {
+                    if (this.mBluetoothAdapter.isDiscovering()) {
+                        resolve("Bluetooth is currently in device discovery process.");
+                    } else {
+                        resolve("Bluetooth is enabled");
                     }
+                } else {
+                    this.mBluetoothAdapter.enable();
+                    setTimeout(() => {
+                        if (!this.mBluetoothAdapter.isEnabled()) {
+                            resolve();
+                        }
+                        else {
+                            reject("Couldn't enable bluetooth, please do it manually.");
+                        }
+                    }, wait);
                 }
-                else {
-                    reject(msg.data.message);
-                }
-                
             }
-
-            enableBluetoothWorker.onerror = function (err) {
-                console.log(`An unhandled error occurred in worker: ${err.filename}, line: ${err.lineno} :`);
-                console.log(err.message);
-                reject(err.message);
-            }
-            //this.mBluetoothAdapter.enable();
-
-            this.listenToBluetoothEnabled()
-            .subscribe(enabled => {
-                if(enabled){
-                    resolve();
-                }             
-            });
-
-
-        });
+          });
     }
 
     isBluetoothEnabled(): boolean {
@@ -85,7 +74,7 @@ export class Hprt {
                 resolve(false);
             }
         });
-    };
+    }
 
     searchPrinters(): Promise<Array<HPRTPrinter>> {
         return new Promise((resolve, reject) => {
@@ -117,30 +106,16 @@ export class Hprt {
         return new Promise((resolve, reject) => {
             try {
 
-                let connectPrinterWorker = new Worker('./workers/connect-printer');
+                let isPortOpen = HPRTAndroidSDK.HPRTPrinterHelper.PortOpen("Bluetooth," + portSetting.portName);
 
-                connectPrinterWorker.postMessage({ port: portSetting });
-
-                connectPrinterWorker.onmessage = function (msg: any) {
-                    connectPrinterWorker.terminate();
-
-                    if (msg == -1) {
-                        reject("No ports open");
-                    }
-                    else {
-                        resolve();
-                    }
-
+                if (isPortOpen === -1) {
+                    reject("No ports open");
                 }
-
-                connectPrinterWorker.onerror = function (err) {
-                    console.log(`An unhandled error occurred in worker: ${err.filename}, line: ${err.lineno} :`);
-                    console.log(err.message);
-                    reject(err.message);
+                else {
+                    resolve();
                 }
-
             } catch (e) {
-                reject(e);
+              reject(e);
             }
         });
     }
@@ -170,6 +145,17 @@ export class Hprt {
         return true;
     }
 
+    FeedPaper(feed: number) {
+        HPRTAndroidSDK.HPRTPrinterHelper.PrintAndFeed(feed);
+        return true;
+    }
+
+    Cut() {
+        HPRTAndroidSDK.HPRTPrinterHelper.PrintAndFeed(500);
+        HPRTAndroidSDK.HPRTPrinterHelper.CutPaper(HPRTAndroidSDK.HPRTPrinterHelper.HPRT_PARTIAL_CUT);
+        return true;
+    }
+
     printText(text: string, alignment: number, attribute: number, textSize: number) {
 
         let align = alignment || 0;
@@ -180,13 +166,58 @@ export class Hprt {
         // data[0] = "0x1b,0x40";
         // HPRTAndroidSDK.HPRTPrinterHelper.WriteData(data);
 
-        //this.LanguageEncode();  
+        // this.LanguageEncode();
 
 
         if (text) {
             HPRTAndroidSDK.HPRTPrinterHelper.PrintText(text, align, attr, txtSize);
         }
 
+        return true;
+    }
+
+    printImage(FilePath: string, halftoneType: number, scaleMode: number, printdpi: number) {
+        if (FilePath) {
+            HPRTAndroidSDK.HPRTPrinterHelper.PrintImage(FilePath, halftoneType, scaleMode, printdpi);
+        }
+        return true;
+    }
+
+    printBinnaryFile(binaryFile: string) {
+        HPRTAndroidSDK.HPRTPrinterHelper.PrintBinaryFile(binaryFile);
+        return true;
+    }
+
+    printImageB64(image: string, halftoneType: number, scaleMode: number, printdpi: number) {
+        let img: ImageSource;
+        img = <ImageSource> fromBase64(image);
+        const folderDest = knownFolders.documents();
+        const pathDest = path.join(folderDest.path, "test.png");
+        console.log(pathDest);
+        const saved: boolean = img.saveToFile(pathDest, "png");
+        if (saved) {
+            HPRTAndroidSDK.HPRTPrinterHelper.PrintImage(pathDest, halftoneType, scaleMode, printdpi);
+        }
+        return saved;
+    }
+
+    printQRCode(text: string, QRCodeSize: number, QRCodeLevel: number, justification: string) {
+        let justify: number;
+        let level: number;
+        if (justification === "L") {
+            justify = 0;
+        }
+        if (justification === "C") {
+            justify = 1;
+        }
+        if (justification === "R") {
+            justify = 2;
+        }
+        level = QRCodeLevel;
+        if (text) {
+            HPRTAndroidSDK.HPRTPrinterHelper.PrintQRCode(text, QRCodeSize + 1 , QRCodeLevel + 0x30 , justify);
+            this.AfterPrintAction();
+        }
         return true;
     }
 
@@ -313,7 +344,7 @@ export class Hprt {
             return sLEncode;
         }
         catch (e) {
-            console.log("Error in LanguageEncode()")
+            console.log("Error in LanguageEncode()");
             return "";
         }
     }
@@ -325,42 +356,23 @@ export class Hprt {
         if (typeof val === 'string') {
             parts = val.split(',');
 
-            if (parts[0].indexOf('x') == -1) {
+            if (parts[0].indexOf('x') === -1) {
                 return null;
             }
         }
 
-        var result = Array.create("byte", parts.length);
+        let result = Array.create("byte", parts.length);
 
-        for (var i = 0; i < parts.length; i++) {
+        for (let i = 0; i < parts.length; i++) {
             result[i] = parts[i];
         }
         return result;
 
-        //return new java.lang.String(value).getBytes(this.encoding);
+        // return new java.lang.String(value).getBytes(this.encoding);
     }
 
     private AfterPrintAction() {
         try {
-            //let PFun = new PublicFunction(utils.ad.getApplicationContext());
-
-            // if(PFun.ReadSharedPreferencesData("Cashdrawer").equals("2") && PrinterProperty.Cashdrawer)    		
-            // 	HPRTPrinterHelper.OpenCashdrawer(0);
-            // if(PFun.ReadSharedPreferencesData("Buzzer").equals("2") && PrinterProperty.Buzzer)    		
-            // 	HPRTPrinterHelper.BeepBuzzer(1,10,10);   
-
-            // iFeed=Integer.valueOf(PFun.ReadSharedPreferencesData("Feeds"));
-            // ArrayAdapter arrFeeds;
-            // arrFeeds = new ArrayAdapter<String>(context,android.R.layout.simple_spinner_item);					
-            // arrFeeds=ArrayAdapter.createFromResource(context, R.array.feeds_list, android.R.layout.simple_spinner_item);
-            // arrFeeds.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // iFeed=(Integer.valueOf(arrFeeds.getItem(iFeed).toString().replace("mm", "")));
-            // HPRTPrinterHelper.PrintAndFeed(iFeed*4);
-            // if(PFun.ReadSharedPreferencesData("Cut").equals("2") && PrinterProperty.Cut)    
-
-            // 	HPRTPrinterHelper.CutPaper(HPRTPrinterHelper.HPRT_PARTIAL_CUT,PrinterProperty.CutSpacing);
-            // else
-            // 	HPRTPrinterHelper.PrintAndFeed(PrinterProperty.TearSpacing);
             HPRTPrinterHelper.PrintAndFeed(PrinterProperty.TearSpacing);
         }
         catch (e) {
@@ -370,21 +382,20 @@ export class Hprt {
 
     // Credits: https://www.nativescript.org/blog/controlling-robots-with-nativescript-bluetooth
     private listenToBluetoothEnabled(): Observable<boolean> {
-        return new Observable(observer => {
-            this.isBluetoothEnabledPromise()
-                .then(enabled => observer.next(enabled))
+        return new Observable<boolean>(observer => {
+            this.isBluetoothEnabledPromise().then(enabled => observer.next(enabled));
 
             let intervalHandle = setInterval(
                 () => {
                     this.isBluetoothEnabledPromise()
-                        .then(enabled => observer.next(enabled))
+                        .then(enabled => observer.next(enabled));
                 }
                 , 1000);
 
             // stop checking every second on unsubscribe
             return () => clearInterval(intervalHandle);
         })
-        .distinctUntilChanged();
+        .pipe(distinctUntilChanged());
     }
 
 
