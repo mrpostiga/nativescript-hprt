@@ -1,44 +1,31 @@
-import androidcontentContext = android.content.Context;
-import androidhardwareusbUsbDevice = android.hardware.usb.UsbDevice;
-import androidgraphicsBitmap = android.graphics.Bitmap;
-import javautilList = java.util.List;
-import androidosHandler = android.os.Handler;
-import javautilArrayList = java.util.ArrayList;
-import androidwidgetArrayAdapter = android.widget.ArrayAdapter;
-import androidcontentIntent = android.content.Intent;
-import javaioFile = java.io.File;
-import javaioInputStream = java.io.InputStream;
-import javaioOutputStream = java.io.OutputStream;
-import javaioFileDescriptor = java.io.FileDescriptor;
-import javautilVector = java.util.Vector;
-
-/// <reference path="./_helpers.d.ts" />
 
 declare module HPRTAndroidSDK {
-	export class BTOperator {
+	export class BTOperator extends HPRTAndroidSDK.IPort {
+		public static class: java.lang.Class<HPRTAndroidSDK.BTOperator>;
 		public static isShake: boolean;
 		public WriteData(param0: native.Array<number>, param1: number): number;
-		public constructor(param0: androidcontentContext, param1: string);
 		public Readdata(param0: native.Array<number>): number;
-		public constructor(param0: androidcontentContext);
 		public OpenPort(param0: string, param1: string): boolean;
 		public ClosePort(): boolean;
 		public GetPortType(): string;
 		public WriteData(param0: native.Array<number>): number;
 		public SetReadTimeout(param0: number): void;
+		public constructor(param0: globalAndroid.content.Context);
 		public ReadData(param0: number): native.Array<number>;
+		public OpenPort(param0: globalAndroid.hardware.usb.UsbDevice): boolean;
 		public InitPort(): void;
+		public constructor(param0: globalAndroid.content.Context, param1: string);
 		public GetPrinterName(): string;
 		public GetPrinterModel(): string;
 		public SetWriteTimeout(param0: number): void;
 		public WriteData(param0: native.Array<number>, param1: number, param2: number): number;
-		public OpenPort(param0: androidhardwareusbUsbDevice): boolean;
 		public OpenPort(param0: string): boolean;
 		public IsOpen(): boolean;
 		public IsBLEType(param0: boolean): void;
 	}
 	export module BTOperator {
 		export class Readerthread {
+			public static class: java.lang.Class<HPRTAndroidSDK.BTOperator.Readerthread>;
 			public run(): void;
 			public constructor(param0: HPRTAndroidSDK.BTOperator, param1: native.Array<number>);
 		}
@@ -47,16 +34,20 @@ declare module HPRTAndroidSDK {
 
 declare module HPRTAndroidSDK {
 	export class HPRTConst {
+		public static class: java.lang.Class<HPRTAndroidSDK.HPRTConst>;
 		public static FOLDER: string;
 		public static FOLDER_NAME: string;
 		public static PRINTP: string;
 		public static PRINHM: string;
+		public static PRINT_MPT8: string;
+		public static PRINT_MPT8E: string;
 		public constructor();
 	}
 }
 
 declare module HPRTAndroidSDK {
 	export class HPRTPrinterHelper {
+		public static class: java.lang.Class<HPRTAndroidSDK.HPRTPrinterHelper>;
 		public BitmapWidth: number;
 		public PrintDataHeight: number;
 		public static LanguageEncode: string;
@@ -142,10 +133,10 @@ declare module HPRTAndroidSDK {
 		public static PRINTER_REAL_TIME_STATUS_ITEM_ONOFFLINE: number;
 		public static PRINTER_REAL_TIME_STATUS_ITEM_ERROR: number;
 		public static PRINTER_REAL_TIME_STATUS_ITEM_PAPER: number;
-		public static replaceBitmapColor(param0: androidgraphicsBitmap, param1: number, param2: number): androidgraphicsBitmap;
 		public static GetKeyCodeListDownloadGraphicsMemory(param0: native.Array<string>): number;
 		public static PrintAndReverseFeedNLine(param0: number): number;
 		public static PrintBinaryFile(param0: string): boolean;
+		public static GetRealTimeStatus(param0: number): native.Array<number>;
 		public static CutPaper(param0: number, param1: number): number;
 		public static SelectStandardMode(): number;
 		public static SetHRIPosition(param0: number): number;
@@ -159,7 +150,6 @@ declare module HPRTAndroidSDK {
 		public static EnableRealTimeCommand(param0: native.Array<number>): number;
 		public static Printtextbitmap(param0: number, param1: string, param2: number, param3: number): void;
 		public static GetPeripheralDeviceStatus(param0: native.Array<number>): number;
-		//public static PortOpen(param0: androidhardwareusbUsbDevice): number;
 		public static DefineNVGraphicsDataRaster(param0: number, param1: number, param2: number, param3: number, param4: native.Array<number>): number;
 		public IsBLEType(param0: boolean): void;
 		public static SendRealTimeGeneratePulse(param0: number, param1: number): number;
@@ -170,13 +160,13 @@ declare module HPRTAndroidSDK {
 		public static SetReferenceDotDensityForGraphices(param0: number): number;
 		public static SetBoldMode(param0: boolean): number;
 		public static SelectPageMode(): number;
-		public static GetRealTimeStatus(param0: number, param1: native.Array<number>): number;
 		public static SetHorizontalAndVerticalMotionUnits(param0: number, param1: number): number;
 		public static PrintRasterImage(param0: number, param1: number, param2: number, param3: native.Array<number>): number;
 		public static GetPrinterID(param0: number): number;
 		public static GetRemainPower(param0: native.Array<number>): number;
 		public static PrintAndCarriageReturn(): number;
 		public static DeleteSpecifiedMemoryGraphics(param0: string): number;
+		public static SelectCNCharacterFont(param0: number): number;
 		public static GotoNextLabel(): number;
 		public static SetRightSideCharacterSpacing(param0: number): number;
 		public static SetUnderlineMode(param0: boolean): number;
@@ -190,13 +180,11 @@ declare module HPRTAndroidSDK {
 		public static QueryNVStoreCapacity(param0: native.Array<number>): number;
 		public static SetCharacterSize(param0: number): number;
 		public static SetQRCodeMoudleSize(param0: number): number;
-		public static FillBitmapToBufferOfPageMode(param0: androidgraphicsBitmap, param1: number, param2: number): boolean;
 		public static DefineDownloadBitImage(param0: number, param1: native.Array<number>): number;
 		public static SetDefaultTextLineSpace(): number;
 		public static SetCharacterSet(param0: number): number;
 		public static PortType(): string;
 		public static QueryNVStoreRemainingCapacity(param0: native.Array<number>): number;
-		public static RefreshImageList(param0: javautilList): number;
 		public static PrintCurveText(param0: number, param1: number, param2: string): number;
 		public static SmartCardReadRecord(param0: number, param1: number, param2: number): number;
 		public static PrintAndReturnStandardMode(): number;
@@ -215,9 +203,9 @@ declare module HPRTAndroidSDK {
 		public static PrintAndFeedNLine(param0: number): number;
 		public static PrintBarCode(param0: number, param1: string): number;
 		public static EHSetEncryptionMode(param0: number): number;
-		public static GetTransmitStatus(param0: number, param1: native.Array<number>): number;
 		public static ExitPrintBackgroundGridMode(): number;
 		public static OpenCashdrawer(param0: number): number;
+		public static RefreshImageList(param0: java.util.List<native.Array<number>>): number;
 		public static BeepBuzzer(param0: number, param1: number, param2: number): number;
 		public static GetPrinterVersion(param0: native.Array<number>): number;
 		public static PrintAndLineFeed(): number;
@@ -230,17 +218,18 @@ declare module HPRTAndroidSDK {
 		public static PrintPDF417(param0: string, param1: number, param2: number, param3: number, param4: number, param5: number, param6: number, param7: number): number;
 		public static PrintNVBitImage(param0: number, param1: number): number;
 		public static EHSetEncryptionAllTrack(): number;
-		public constructor(param0: androidcontentContext, param1: string);
 		public static SetUpsideDownPrintMode(param0: boolean): number;
+		public static PortOpen(param0: globalAndroid.hardware.usb.UsbDevice): number;
 		public static SetPDF417RowHeight(param0: number): number;
 		public static DefineNVBitImageFMode(param0: number, param1: native.Array<number>): number;
+		public static PrintPageLine(param0: number, param1: number, param2: number, param3: number, param4: number): number;
 		public static CancelKanjiCharacterMode(): number;
 		public static PrintDataInPageMode(): number;
+		public constructor(param0: globalAndroid.content.Context, param1: string);
 		public static SetBarcodeWidth(param0: number): number;
 		public static PrintText(param0: string): number;
 		public static ReadNVUserMemory(param0: number, param1: number, param2: native.Array<number>): number;
 		public static CancelReadSmartCard(): number;
-		public static DefineNVImage(param0: native.Array<string>, param1: androidosHandler): number;
 		public static SelectInternationalCharacterSet(param0: number): number;
 		public static SetAbsolutePrintPosition(param0: number): number;
 		public static GetPDF417Size(): number;
@@ -248,6 +237,8 @@ declare module HPRTAndroidSDK {
 		public static SelectCharacterFont(param0: number): number;
 		public static PrintText(param0: string, param1: number, param2: number, param3: number): number;
 		public static SetPrintMode(param0: number): number;
+		public static FillBitmapToBufferOfPageMode(param0: globalAndroid.graphics.Bitmap, param1: number, param2: number): boolean;
+		public static setCodePage(param0: number): number;
 		public constructor();
 		public static SetPrintThermalHeadMode(param0: number): number;
 		public static EHReturnAllTrackData(): number;
@@ -256,6 +247,7 @@ declare module HPRTAndroidSDK {
 		public static ClearBuffer(): number;
 		public static SetPrintAreaWidth(param0: number): number;
 		public static DeleteSpecifiedNVImage(param0: string): number;
+		public static PrintPageRectangle(param0: number, param1: number, param2: number, param3: number, param4: number): number;
 		public static GetRemainingCapacityOfDownloadGraphicsMemory(param0: native.Array<number>): number;
 		public static DeleteAllMemoryGraphics(): number;
 		public static PrintDownloadImage(param0: string, param1: number): number;
@@ -281,12 +273,13 @@ declare module HPRTAndroidSDK {
 		public static EHReset(): number;
 		public static PortOpen(param0: string): number;
 		public static PrintQRCode(param0: string): number;
+		public static GetTransmitStatus(param0: number): native.Array<number>;
+		public static PrintBitmap(param0: globalAndroid.graphics.Bitmap, param1: number, param2: number, param3: number): number;
 		public static SetOppositeColor(param0: boolean): number;
 		public static SetPageModeAbsoluteVerticalPosition(param0: number): number;
 		public static CapturePrinterFunction(param0: number, param1: native.Array<number>, param2: native.Array<number>, param3: native.Array<number>): number;
 		public static PrintHLines(param0: number, param1: native.Array<number>): number;
 		public static PortClose(): boolean;
-		public static PrintBitmap(param0: androidgraphicsBitmap, param1: number, param2: number, param3: number): number;
 		public static EHRequestAttestationData(): number;
 		public CharacterSet(): number;
 		public static SetPDF417Columns(param0: number): number;
@@ -302,6 +295,7 @@ declare module HPRTAndroidSDK {
 		public static SetUnidirectionalPrint(param0: number): number;
 		public static SmartCardGetResponse(param0: number): number;
 		public static SetPDF417Rows(param0: number): number;
+		public static replaceBitmapColor(param0: globalAndroid.graphics.Bitmap, param1: number, param2: number): globalAndroid.graphics.Bitmap;
 		public static PrintGraphicsDataInBuffer(): number;
 		public static DefineDownloadGraphicsDataColumns(param0: number, param1: number, param2: number, param3: number, param4: native.Array<number>): number;
 		public static SetBTName(param0: string): number;
@@ -309,8 +303,10 @@ declare module HPRTAndroidSDK {
 		public static DefineBufferGraphicsDataRaster(param0: number, param1: number, param2: number, param3: native.Array<number>): number;
 		public static bytetohex(param0: native.Array<number>): string;
 		public static EHSetDefaultConfiguration(): number;
+		public static DefineNVImage(param0: native.Array<string>, param1: globalAndroid.os.Handler): number;
 		public static SetDoubleStrikeMode(param0: boolean): number;
 		public static SetSmartCardOperateMode(param0: number): number;
+		public static PrintText(param0: number, param1: boolean, param2: boolean, param3: boolean, param4: number, param5: string): number;
 		public static CancelTrackCardReaderMode(): number;
 		public static Set3TrackCardReaderMode(): number;
 		public static logcat(param0: string): void;
@@ -323,8 +319,9 @@ declare module HPRTAndroidSDK {
 
 declare module HPRTAndroidSDK {
 	export class IPort {
+		public static class: java.lang.Class<HPRTAndroidSDK.IPort>;
 		/**
-		 * Constructs a new instance of the HPRTAndroidSDK.IPort interface with the provided implementation.
+		 * Constructs a new instance of the HPRTAndroidSDK.IPort interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 		 */
 		public constructor(implementation: {
 			IsBLEType(param0: boolean): void;
@@ -333,7 +330,7 @@ declare module HPRTAndroidSDK {
 			InitPort(): void;
 			OpenPort(param0: string): boolean;
 			OpenPort(param0: string, param1: string): boolean;
-			OpenPort(param0: androidhardwareusbUsbDevice): boolean;
+			OpenPort(param0: globalAndroid.hardware.usb.UsbDevice): boolean;
 			ClosePort(): boolean;
 			WriteData(param0: native.Array<number>): number;
 			WriteData(param0: native.Array<number>, param1: number): number;
@@ -344,6 +341,7 @@ declare module HPRTAndroidSDK {
 			GetPrinterName(): string;
 			GetPrinterModel(): string;
 		});
+		public constructor();
 		public static paramPortSetting: string;
 		public static PortType: string;
 		public static IsPortOpen: boolean;
@@ -354,13 +352,13 @@ declare module HPRTAndroidSDK {
 		public WriteData(param0: native.Array<number>): number;
 		public SetReadTimeout(param0: number): void;
 		public ReadData(param0: number): native.Array<number>;
+		public OpenPort(param0: globalAndroid.hardware.usb.UsbDevice): boolean;
 		public InitPort(): void;
 		public GetPrinterName(): string;
 		public GetPrinterModel(): string;
 		public SetWriteTimeout(param0: number): void;
 		public WriteData(param0: native.Array<number>, param1: number, param2: number): number;
 		public OpenPort(param0: string): boolean;
-		public OpenPort(param0: androidhardwareusbUsbDevice): boolean;
 		public IsOpen(): boolean;
 		public IsBLEType(param0: boolean): void;
 	}
@@ -368,53 +366,72 @@ declare module HPRTAndroidSDK {
 
 declare module HPRTAndroidSDK {
 	export class LogUlit {
+		public static class: java.lang.Class<HPRTAndroidSDK.LogUlit>;
 		public constructor();
 		public static writeFileToSDCard(param0: native.Array<number>, param1: string, param2: string, param3: boolean, param4: boolean): void;
+		public static writeFileToSDCard(param0: native.Array<number>): void;
+	}
+}
+
+declare module HPRTAndroidSDK {
+	export class Print {
+		public static class: java.lang.Class<HPRTAndroidSDK.Print>;
+		public constructor();
+		public setUsb(param0: boolean): void;
+		public setLzo(param0: boolean): void;
+		public isLzo(): boolean;
+		public isWifi(): boolean;
+		public setWifi(param0: boolean): void;
+		public isBT(): boolean;
+		public isUsb(): boolean;
+		public setBT(param0: boolean): void;
 	}
 }
 
 declare module HPRTAndroidSDK {
 	export class PrinterDataCore {
+		public static class: java.lang.Class<HPRTAndroidSDK.PrinterDataCore>;
 		public BitmapWidth: number;
 		public PrintDataHeight: number;
 		public HalftoneMode: number;
 		public ScaleMode: number;
 		public CompressMode: number;
 		public constructor();
-		public sysCopy(param0: javautilList): native.Array<number>;
-		public PrintDataFormat(param0: androidgraphicsBitmap, param1: number): native.Array<number>;
+		public PrintDataFormat(param0: globalAndroid.graphics.Bitmap, param1: number): native.Array<number>;
+		public intTo4Bytes(param0: number): native.Array<number>;
+		public sysCopy(param0: java.util.List<native.Array<number>>): native.Array<number>;
 	}
 }
 
-
 declare module HPRTAndroidSDK {
 	export class PublicFunction {
+		public static class: java.lang.Class<HPRTAndroidSDK.PublicFunction>;
 		public static PREFS_NAME: string;
 		public constructor();
 		public EnableDevice(param0: string): string;
 		public GetStringIndex(param0: string, param1: string, param2: number, param3: boolean): number;
 		public ReadTxtFile(param0: string): string;
-		public sysCopy(param0: javautilList): native.Array<number>;
-		public constructor(param0: androidcontentContext);
 		public WriteSharedPreferencesData(param0: string, param1: string): void;
+		public GetSDPicture(): java.util.ArrayList<java.util.HashMap<string,string>>;
+		public constructor(param0: globalAndroid.content.Context);
 		public DisableDevice(param0: string): string;
-		public static ExistSDCard(): boolean;
+		public ExistSDCard(): boolean;
 		public ShowMessageDialog(param0: string, param1: string): void;
 		public ArrayCopy(param0: native.Array<number>, param1: number, param2: native.Array<number>, param3: number, param4: number): native.Array<number>;
 		public ReverseString(param0: string): string;
+		public getLanguageEncode(param0: string): string;
 		public getCodePageIndex(param0: string): number;
 		public CountSubString(param0: string, param1: string): number;
-		public GetSDPicture(): javautilArrayList;
-		public getLanguageEncode(param0: string): string;
 		public ReadSharedPreferencesData(param0: string): string;
+		public sysCopy(param0: java.util.List<native.Array<number>>): native.Array<number>;
 		public CreateRepeatString(param0: string, param1: number): string;
 	}
 }
 
 declare module HPRTAndroidSDK {
-	export class SerialOperator {
+	export class SerialOperator extends HPRTAndroidSDK.IPort {
+		public static class: java.lang.Class<HPRTAndroidSDK.SerialOperator>;
 		public WriteData(param0: native.Array<number>, param1: number): number;
-		public constructor(param0: androidcontentContext, param1: string);
 		public Readdata(param0: native.Array<number>): number;
 		public OpenPort(param0: string, param1: string): boolean;
 		public ClosePort(): boolean;
@@ -422,18 +439,20 @@ declare module HPRTAndroidSDK {
 		public WriteData(param0: native.Array<number>): number;
 		public SetReadTimeout(param0: number): void;
 		public ReadData(param0: number): native.Array<number>;
+		public OpenPort(param0: globalAndroid.hardware.usb.UsbDevice): boolean;
 		public InitPort(): void;
+		public constructor(param0: globalAndroid.content.Context, param1: string);
 		public GetPrinterName(): string;
 		public GetPrinterModel(): string;
 		public SetWriteTimeout(param0: number): void;
 		public WriteData(param0: native.Array<number>, param1: number, param2: number): number;
 		public OpenPort(param0: string): boolean;
-		public OpenPort(param0: androidhardwareusbUsbDevice): boolean;
 		public IsOpen(): boolean;
 		public IsBLEType(param0: boolean): void;
 	}
 	export module SerialOperator {
 		export class Readerthread {
+			public static class: java.lang.Class<HPRTAndroidSDK.SerialOperator.Readerthread>;
 			public constructor(param0: HPRTAndroidSDK.SerialOperator, param1: native.Array<number>);
 			public run(): void;
 		}
@@ -441,68 +460,82 @@ declare module HPRTAndroidSDK {
 }
 
 declare module HPRTAndroidSDK {
-	export class USBOperator {
+	export class USBOperator extends HPRTAndroidSDK.IPort {
+		public static class: java.lang.Class<HPRTAndroidSDK.USBOperator>;
 		public static STD_USB_REQUEST_GET_DESCRIPTOR: number;
 		public static LIBUSB_DT_STRING: number;
-		public mUSBDevicesArrayAdapter: androidwidgetArrayAdapter;
+		public mUSBDevicesArrayAdapter: globalAndroid.widget.ArrayAdapter<string>;
 		public intPermissionState: number;
-		public static PrinterList1: javautilList;
-		public static PrinterList2: javautilList;
-		public intent: androidcontentIntent;
+		public static PrinterList1: java.util.List<string>;
+		public static PrinterList2: java.util.List<string>;
+		public intent: globalAndroid.content.Intent;
 		public WriteData(param0: native.Array<number>, param1: number): number;
-		public constructor(param0: androidcontentContext, param1: string);
 		public Readdata(param0: native.Array<number>): number;
-		public constructor(param0: androidcontentContext);
 		public OpenPort(param0: string, param1: string): boolean;
 		public ClosePort(): boolean;
 		public GetPortType(): string;
 		public WriteData(param0: native.Array<number>): number;
 		public SetReadTimeout(param0: number): void;
+		public constructor(param0: globalAndroid.content.Context);
 		public ReadData(param0: number): native.Array<number>;
+		public OpenPort(param0: globalAndroid.hardware.usb.UsbDevice): boolean;
 		public InitPort(): void;
+		public constructor(param0: globalAndroid.content.Context, param1: string);
 		public GetPrinterName(): string;
 		public GetPrinterModel(): string;
 		public SetWriteTimeout(param0: number): void;
 		public WriteData(param0: native.Array<number>, param1: number, param2: number): number;
 		public OpenPort(param0: string): boolean;
-		public OpenPort(param0: androidhardwareusbUsbDevice): boolean;
 		public IsOpen(): boolean;
 		public IsBLEType(param0: boolean): void;
 	}
 	export module USBOperator {
 		export class Readerthread {
+			public static class: java.lang.Class<HPRTAndroidSDK.USBOperator.Readerthread>;
 			public run(): void;
 			public constructor(param0: HPRTAndroidSDK.USBOperator, param1: native.Array<number>);
 		}
 	}
 }
 
-
 declare module HPRTAndroidSDK {
-	export class WiFiOperator {
+	export class WiFiOperator extends HPRTAndroidSDK.IPort {
+		public static class: java.lang.Class<HPRTAndroidSDK.WiFiOperator>;
 		public WriteData(param0: native.Array<number>, param1: number): number;
-		public constructor(param0: androidcontentContext, param1: string);
-		public constructor(param0: androidcontentContext);
 		public OpenPort(param0: string, param1: string): boolean;
 		public ClosePort(): boolean;
 		public GetPortType(): string;
 		public WriteData(param0: native.Array<number>): number;
 		public SetReadTimeout(param0: number): void;
+		public constructor(param0: globalAndroid.content.Context);
 		public ReadData(param0: number): native.Array<number>;
+		public OpenPort(param0: globalAndroid.hardware.usb.UsbDevice): boolean;
 		public InitPort(): void;
+		public constructor(param0: globalAndroid.content.Context, param1: string);
 		public GetPrinterName(): string;
 		public GetPrinterModel(): string;
 		public SetWriteTimeout(param0: number): void;
 		public WriteData(param0: native.Array<number>, param1: number, param2: number): number;
-		public OpenPort(param0: androidhardwareusbUsbDevice): boolean;
 		public OpenPort(param0: string): boolean;
 		public IsOpen(): boolean;
 		public IsBLEType(param0: boolean): void;
+	}
+	export module WiFiOperator {
+		export class a {
+			public static class: java.lang.Class<HPRTAndroidSDK.WiFiOperator.a>;
+			public run(): void;
+		}
+		export class b {
+			public static class: java.lang.Class<HPRTAndroidSDK.WiFiOperator.b>;
+			public constructor(param0: HPRTAndroidSDK.WiFiOperator, param1: number);
+			public run(): void;
+		}
 	}
 }
 
 declare module HPRTAndroidSDK {
 	export class hprt_printer_helper_cmd {
+		public static class: java.lang.Class<HPRTAndroidSDK.hprt_printer_helper_cmd>;
 		public hprt_cmd_qr_print_the_symbol_data_mpt_wrap(param0: number, param1: native.Array<number>, param2: number, param3: number, param4: number, param5: native.Array<number>, param6: number, param7: native.Array<number>): number;
 		public hprt_cmd_print_and_feed_paper_wrap(param0: number, param1: number, param2: native.Array<number>, param3: number, param4: native.Array<number>): number;
 		public hprt_cmd_select_cut_mode_and_feed_paper_wrap(param0: number, param1: number, param2: number, param3: native.Array<number>, param4: number, param5: native.Array<number>): number;
@@ -668,6 +701,7 @@ declare module HPRTAndroidSDK {
 
 declare module HPRTAndroidSDK {
 	export class hprt_printer_model {
+		public static class: java.lang.Class<HPRTAndroidSDK.hprt_printer_model>;
 		public constructor();
 		public hprt_printer_model_get_info_by_name_wrap(param0: string, param1: native.Array<number>, param2: native.Array<number>): number;
 		public hprt_printer_model_id_get_property(param0: number, param1: number, param2: native.Array<number>, param3: native.Array<number>, param4: native.Array<number>): number;
@@ -678,16 +712,34 @@ declare module HPRTAndroidSDK {
 	}
 }
 
+declare module LZO_Compress {
+	export class LZOCompress {
+		public static class: java.lang.Class<LZO_Compress.LZOCompress>;
+		public constructor();
+		public lzoCompressData(param0: native.Array<number>, param1: number, param2: native.Array<number>, param3: native.Array<number>, param4: native.Array<number>): number;
+	}
+}
+
+declare module TIFFDataCompress {
+	export class TIFFCompres {
+		public static class: java.lang.Class<TIFFDataCompress.TIFFCompres>;
+		public constructor();
+		public TIFFDataUCompress(param0: native.Array<number>, param1: number, param2: number, param3: native.Array<number>, param4: native.Array<number>): number;
+	}
+}
+
 declare module org {
 	export module winplus {
 		export module serial {
 			export module utils {
 				export class SerialPort {
-					public getOutputStream(): javaioOutputStream;
-					public getInputStream(): javaioInputStream;
-					public constructor(param0: javaioFile, param1: number, param2: androidcontentContext);
+					public static class: java.lang.Class<org.winplus.serial.utils.SerialPort>;
+					public static clear(): number;
+					public constructor(param0: java.io.File, param1: number, param2: globalAndroid.content.Context);
+					public static open(param0: string, param1: number, param2: number): java.io.FileDescriptor;
+					public getOutputStream(): java.io.OutputStream;
+					public getInputStream(): java.io.InputStream;
 					public static close(): number;
-					public static open(param0: string, param1: number, param2: number): javaioFileDescriptor;
 				}
 			}
 		}
@@ -699,13 +751,15 @@ declare module org {
 		export module serial {
 			export module utils {
 				export class SerialPortFinder {
+					public static class: java.lang.Class<org.winplus.serial.utils.SerialPortFinder>;
 					public constructor();
 					public getAllDevices(): native.Array<string>;
 					public getAllDevicesPath(): native.Array<string>;
 				}
 				export module SerialPortFinder {
 					export class Driver {
-						public getDevices(): javautilVector;
+						public static class: java.lang.Class<org.winplus.serial.utils.SerialPortFinder.Driver>;
+						public getDevices(): java.util.Vector<java.io.File>;
 						public constructor(param0: org.winplus.serial.utils.SerialPortFinder, param1: string, param2: string);
 						public getName(): string;
 					}
@@ -714,3 +768,6 @@ declare module org {
 		}
 	}
 }
+
+//Generics information:
+
